@@ -1,58 +1,225 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ConnectIT ITSM — Laravel + MySQL
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Enterprise-grade IT Service Management system built with **Laravel 13** + **MySQL** + **Blade Templates**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Quick Start
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Requirements
+- PHP 8.2+
+- MySQL 8.0+
+- Composer
+- Node.js 18+ (for Vite assets)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Installation
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone and enter directory
+cd connectit-laravel
 
-php artisan boost:install
+# 2. Install PHP dependencies
+composer install
+
+# 3. Copy environment file
+cp .env.example .env
+
+# 4. Generate application key
+php artisan key:generate
+
+# 5. Configure MySQL in .env
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=connectit_itsm
+# DB_USERNAME=root
+# DB_PASSWORD=your_password
+
+# 6. Create MySQL database
+mysql -u root -p -e "CREATE DATABASE connectit_itsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# 7. Run migrations
+php artisan migrate
+
+# 8. Seed default data (users, SLA policies, settings)
+php artisan db:seed
+
+# 9. Install Node dependencies and build assets
+npm install
+npm run build
+
+# 10. Create storage symlink
+php artisan storage:link
+
+# 11. Start the server
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Visit: **http://localhost:8000**
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🔑 Default Login Credentials
 
-## Code of Conduct
+| Role | Email | Password |
+|------|-------|----------|
+| Ultra Super Admin | ultra@connectit.local | password |
+| Super Admin | super@connectit.local | password |
+| Admin | admin@connectit.local | password |
+| Agent | agent1@connectit.local | password |
+| User | user@connectit.local | password |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## ⚙️ Environment Configuration
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Required
+```env
+APP_NAME="ConnectIT ITSM"
+APP_URL=http://localhost:8000
+DB_CONNECTION=mysql
+DB_DATABASE=connectit_itsm
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
 
-## License
+### Optional Integrations
+```env
+# Google Gemini AI (for Kiru AI assistant)
+GEMINI_API_KEY=your_gemini_api_key
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Twilio WhatsApp
+TWILIO_SID=your_twilio_sid
+TWILIO_TOKEN=your_twilio_token
+TWILIO_FROM=whatsapp:+14155238886
+
+# SMTP Email
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your@email.com
+MAIL_PASSWORD=your_app_password
+MAIL_FROM_ADDRESS=noreply@yourcompany.com
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+app/
+├── Http/
+│   ├── Controllers/          # 12 controllers (Auth, Ticket, Dashboard, SLA, etc.)
+│   └── Middleware/           # CheckRole RBAC middleware
+├── Models/                   # 20 Eloquent models
+├── Services/                 # TicketService, OmniChannelService, AiService
+├── Enums/                    # 12 PHP 8.1 enums (TicketStatus, UserRole, etc.)
+├── Events/                   # TicketCreated, TicketAssigned, etc.
+├── Listeners/                # SendTicketNotificationListener
+└── Jobs/                     # SendEmailNotification, SendWhatsAppNotification
+
+resources/views/
+├── layouts/                  # app.blade.php, sidebar, header, chatbot
+├── auth/                     # login, register, profile
+├── tickets/                  # index, show, create
+├── dashboard.blade.php       # Main dashboard with KPIs, charts, heatmap
+├── sla/                      # SLA management
+├── reports/                  # Analytics & reports
+├── users/                    # User management
+├── assets/                   # CMDB
+├── problems/                 # Problem management
+├── changes/                  # Change management
+├── knowledge/                # Knowledge base
+├── timesheets/               # Time tracking
+└── settings/                 # System settings
+```
+
+---
+
+## 🎯 Features
+
+### Ticket Management
+- Full incident lifecycle (New → Assigned → In Progress → Resolved → Closed)
+- Priority matrix (Impact × Urgency = Priority)
+- SLA response & resolution timers with real-time countdown
+- SLA pause/resume on hold statuses
+- Activity timeline (comments, work notes, status changes, emails)
+- AI-powered suggestions via Google Gemini
+
+### ITSM Modules
+- **Problem Management** — Root cause analysis, workarounds
+- **Change Management** — CAB workflow, risk assessment, rollback plans
+- **CMDB** — Asset inventory with warranty tracking
+- **Knowledge Base** — Self-service articles with ratings
+
+### Analytics & Reporting
+- Live dashboard with KPI metrics, heatmaps, leaderboards
+- SLA compliance tracking
+- Agent performance reports
+- Priority distribution charts
+
+### Notifications
+- Email via SMTP (queued)
+- WhatsApp via Twilio (queued)
+- In-app notifications
+
+### Security
+- Laravel session authentication
+- CSRF protection on all forms
+- Role-based access control (6 levels)
+- Bcrypt password hashing
+
+---
+
+## 🚢 Production Deployment
+
+### Apache (Shared Hosting)
+The `public/.htaccess` is pre-configured. Point your document root to `public/`.
+
+### Nginx (VPS)
+Use the included `nginx.conf` as a template. Replace `your-domain.com` with your actual domain.
+
+### Queue Worker (for notifications)
+```bash
+php artisan queue:work --tries=5 --timeout=60
+```
+
+### Supervisor (keep queue running)
+```ini
+[program:connectit-queue]
+command=php /var/www/connectit-laravel/artisan queue:work --tries=5
+autostart=true
+autorestart=true
+user=www-data
+```
+
+### Cron (for scheduled tasks)
+```cron
+* * * * * cd /var/www/connectit-laravel && php artisan schedule:run >> /dev/null 2>&1
+```
+
+---
+
+## 🔧 Artisan Commands
+
+```bash
+# Check omnichannel health
+php artisan omnichannel:health
+
+# Poll incoming emails
+php artisan omnichannel:poll
+
+# Test omnichannel connectivity
+php artisan omnichannel:test
+
+# Clear all caches
+php artisan optimize:clear
+
+# Run migrations fresh with seed
+php artisan migrate:fresh --seed
+```
+
+---
+
+## 📝 License
+MIT License — ConnectIT ITSM
