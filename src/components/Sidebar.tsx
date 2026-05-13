@@ -128,6 +128,7 @@ export function Sidebar() {
       label: "System Administration",
       adminOnly: true,
       items: [
+        { icon: BarChart3, label: "System Analytics", path: "/system-analytics" },
         { icon: Users, label: "User Management", path: "/users" },
         { icon: KeyRound, label: "Access Control", path: "/access-control" },
         { icon: Users, label: "Group Management", path: "/groups" },
@@ -238,35 +239,54 @@ export function Sidebar() {
 
             {(expandedSections.includes(section.label) || isCollapsed || searchQuery) && (
               <div className="space-y-0.5">
-                {section.items?.map((item) => (
-                  <Link
-                    key={item.label}
-                    to={item.path || "#"}
-                    className={cn(
-                      "flex items-center gap-3 px-4 py-2.5 transition-all relative group",
-                      location.pathname === item.path
-                        ? "bg-sn-green/10 text-sn-green border-r-2 border-sn-green"
-                        : "text-text-dim hover:bg-white/5 hover:text-white"
-                    )}
-                  >
-                    <item.icon className={cn(
-                      "w-4 h-4 shrink-0",
-                      location.pathname === item.path ? "text-sn-green" : "text-text-dim group-hover:text-white"
-                    )} />
-                    {!isCollapsed && <span className="text-sm truncate flex-grow">{item.label}</span>}
-                    {!isCollapsed && item.badge !== undefined && item.badge > 0 && (
-                      <span className="bg-sn-green text-sn-dark text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
-                        {item.badge}
-                      </span>
-                    )}
+                {section.items?.map((item) => {
+                  const isExternal = item.path === "/system-analytics";
+                  const content = (
+                    <>
+                      <item.icon className={cn(
+                        "w-4 h-4 shrink-0",
+                        location.pathname === item.path ? "text-sn-green" : "text-text-dim group-hover:text-white"
+                      )} />
+                      {!isCollapsed && <span className="text-sm truncate flex-grow">{item.label}</span>}
+                      {!isCollapsed && item.badge !== undefined && item.badge > 0 && (
+                        <span className="bg-sn-green text-sn-dark text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                          {item.badge}
+                        </span>
+                      )}
 
-                    {isCollapsed && (
-                      <div className="absolute left-16 bg-sn-sidebar border border-white/10 px-3 py-2 rounded shadow-xl text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-                        {item.label}
-                      </div>
-                    )}
-                  </Link>
-                ))}
+                      {isCollapsed && (
+                        <div className="absolute left-16 bg-sn-sidebar border border-white/10 px-3 py-2 rounded shadow-xl text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                          {item.label}
+                        </div>
+                      )}
+                    </>
+                  );
+
+                  const commonClasses = cn(
+                    "flex items-center gap-3 px-4 py-2.5 transition-all relative group",
+                    location.pathname === item.path
+                      ? "bg-sn-green/10 text-sn-green border-r-2 border-sn-green"
+                      : "text-text-dim hover:bg-white/5 hover:text-white"
+                  );
+
+                  if (isExternal) {
+                    return (
+                      <a key={item.label} href={item.path} className={commonClasses}>
+                        {content}
+                      </a>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.path || "#"}
+                      className={commonClasses}
+                    >
+                      {content}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
